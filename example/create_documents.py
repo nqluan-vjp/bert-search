@@ -6,7 +6,7 @@ import json
 
 import pandas as pd
 from bert_serving.client import BertClient
-bc = BertClient(ip='192.168.88.128', port=5555, port_out=5556,output_fmt='list')
+bc = BertClient(ip='127.0.0.1', port=5555, port_out=5556,output_fmt='list')
 
 
 def create_document(doc, emb, index_name):

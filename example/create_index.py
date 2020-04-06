@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 
 
 def main(args):
-    client = Elasticsearch(["192.168.88.128:9200"], maxsize=25)
+    client = Elasticsearch(["127.0.0.1:9200"], maxsize=25)
     client.indices.delete(index=args.index_name, ignore=[404])
     with open(args.index_file) as index_file:
         source = index_file.read().strip()

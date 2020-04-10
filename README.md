@@ -15,7 +15,7 @@ $ unzip Japanese_L-12_H-768_A-12_E-30_BPE.zip
 ### 2. Clone source code 
 
 ```bash
-$ git clone https://github.com/nqluan-vjp/bert-sample.git
+$ git clone https://github.com/nqluan-vjp/bert-search.git
 ```
 
 
@@ -31,7 +31,7 @@ $ nano .env
 Copy content below to file .env
 
 ```bash
-$ PATH_MODEL=./Japanese_L-12_H-768_A-12_E-30_BPE.zip
+$ PATH_MODEL=./Japanese_L-12_H-768_A-12_E-30_BPE
 $ INDEX_NAME=jobsearch
 ```
 

@@ -5,7 +5,7 @@ from flask import Flask, render_template, jsonify, request
 from elasticsearch import Elasticsearch
 from bert_serving.client import BertClient
 SEARCH_SIZE = 10
-INDEX_NAME = os.environ['INDEX_NAME']
+INDEX_NAME = 'jobsearch'
 app = Flask(__name__)
 
 
@@ -26,7 +26,7 @@ def analyzer():
         "script_score": {
             "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, doc['text_vector']) + 1.0",
+                "source": "cosineSimilarity(params.query_vector, doc['question_vector']) + 1.0",
                 "params": {"query_vector": query_vector}
             }
         }
@@ -36,8 +36,7 @@ def analyzer():
         index=INDEX_NAME,
         body={
             "size": SEARCH_SIZE,
-            "query": script_query,
-            "_source": {"includes": ["title", "text"]}
+            "query": script_query
         }
     )
     print(query)

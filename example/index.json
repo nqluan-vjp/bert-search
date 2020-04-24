@@ -1,6 +1,6 @@
 {
   "settings": {
-    "number_of_shards": 2,
+    "number_of_shards": 14,
     "number_of_replicas": 1
   },
   "mappings": {
@@ -9,13 +9,49 @@
       "enabled": "true"
     },
     "properties": {
-      "title": {
+      "id": {
         "type": "text"
       },
-      "text": {
+      "source": {
         "type": "text"
       },
-      "text_vector": {
+	  "question": {
+        "type": "text"
+      },
+	  "page": {
+        "type": "text"
+      },
+	  "category": {
+        "type": "text"
+      },
+	  "generic": {
+        "type": "text"
+      },
+	  "applicant": {
+        "type": "text"
+      },
+	  "issue_date": {
+        "type": "date"
+      },
+	  "r_issue_date": {
+        "type": "date"
+      },
+	  "molecular_weight": {
+        "type": "text"
+      },
+	  "modality": {
+        "type": "text"
+      },
+	  "adaptive_disease": {
+        "type": "text"
+      },
+	  "adm_route": {
+        "type": "text"
+      },
+	  "doc_id": {
+        "type": "text"
+      },
+      "question_vector": {
         "type": "dense_vector",
         "dims": 768
       }

@@ -37,8 +37,20 @@
           <v-col cols="12" md="6" offset-md="1" offset-lg="1" offset-xl="1">
             <template v-if="'hits' in result">
               <v-card max-width="700" flat v-for="(item, index) in result.hits.hits" :key="index">
-                <v-card-title>[[ item._source.title ]]</v-card-title>
-                <v-card-text>[[ item._source.text.slice(0, 300) ]]...</v-card-text>
+                <v-card-title>ID : [[ item._source.id ]]</v-card-title>
+                <v-card-text>Source :[[ item._source.source ]]...</v-card-text>
+				<v-card-text>question : [[ item._source.question ]]...</v-card-text>
+				<v-card-text>page :[[ item._source.page ]]...</v-card-text>
+				<v-card-text>category :[[ item._source.category ]]...</v-card-text>
+				<v-card-text>generic :[[ item._source.generic ]]...</v-card-text>
+				<v-card-text>applicant :[[ item._source.applicant ]]...</v-card-text>
+				<v-card-text>issue_date :[[ item._source.issue_date ]]...</v-card-text>
+				<v-card-text>r_issue_date :[[ item._source.r_issue_date ]]...</v-card-text>
+				<v-card-text>molecular_weight :[[ item._source.molecular_weight ]]...</v-card-text>
+				<v-card-text>modality :[[ item._source.modality ]]...</v-card-text>
+				<v-card-text>adaptive_disease :[[ item._source.adaptive_disease ]]...</v-card-text>
+				<v-card-text>adm_route :[[ item._source.adm_route ]]...</v-card-text>
+				<v-card-text>doc_id :[[ item._source.doc_id ]]...</v-card-text>
                 <!--
                 <v-card-actions>
                   <v-chip class="primary">[[ item._score ]]</v-chip>
@@ -68,7 +80,7 @@
         result: []
       },
       created() {
-        this.query = 'designer'
+        this.query = 'テスト'
         this.search()
       },
       methods: {

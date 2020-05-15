@@ -4,10 +4,10 @@ Example script to create elasticsearch documents.
 import argparse
 import json
 import os
-
 import pandas as pd
+from pyknp import Juman
 from bert_serving.client import BertClient
-bc = BertClient(ip='127.0.0.1', port=5555, port_out=5556,output_fmt='list')
+bc = BertClient(ip='localhost', port=9555, port_out=9556,output_fmt='list')
 
 
 def create_document(doc, emb, index_name):
@@ -33,43 +33,48 @@ def create_document(doc, emb, index_name):
 
 
 def load_dataset(path):
-    files = []
     docs = []
     for r, d, f in os.walk(path):
         for file in f:
             if '.json' in file:
-                files.append(os.path.join(r, file))
-    for f in files:
-        with open(f, 'r',encoding="utf-8_sig") as myfile:
-            data=myfile.read()
-            print(data)
-        obj = json.loads(data)
-        for item in obj: 
-                doc = {
-                    'id': item['id'],
-                    'source': item['source'],
-                    'question': item['question'],
-                    'page': item['page'],
-                    'category': item['category'],
-                    'generic': item['generic'],
-                    'applicant': item['applicant'],
-                    'issue_date': item['issue_date'],
-                    'r_issue_date': item['r_issue_date'],
-                    'molecular_weight': item['molecular_weight'],
-                    'modality': item['modality'],
-                    'adaptive_disease': item['adaptive_disease'],
-                    'adm_route': item['adm_route'],
-                    'doc_id': item['doc_id'],
-                }
-                docs.append(doc)
+                with open(os.path.join(r, file), 'r',encoding="utf-8_sig") as myfile:
+                    data=myfile.read()
+                    print(data)
+                obj = json.loads(data)    
+                for item in obj: 
+                    doc = {
+                        'id': item['id'],
+                        'question_vector': item['question'],
+                        'source': item['source'],
+                        'question': item['question'],
+                        'page': item['page'],
+                        'category': item['category'],
+                        'generic': item['generic'],
+                        'applicant': item['applicant'],
+                        'issue_date': item['issue_date'],
+                        'r_issue_date': item['r_issue_date'],
+                        'molecular_weight': item['molecular_weight'],
+                        'modality': item['modality'],
+                        'adaptive_disease': item['adaptive_disease'],
+                        'adm_route': item['adm_route'],
+                        'doc_id': item['doc_id'],
+                    }
+                    docs.append(doc)
+    print(docs)    
     return docs
 
 
 def bulk_predict(docs, batch_size=256):
     """Predict bert embeddings."""
+    jumanpp = Juman(jumanpp=False)
     for i in range(0, len(docs), batch_size):
         batch_docs = docs[i: i+batch_size]
-        embeddings = bc.encode([doc['question'] for doc in batch_docs])
+        pre_embedding_docs = []
+        for doc in batch_docs:
+            result = jumanpp.analysis(doc['question'])
+            texts = [mrph.midasi for mrph in result.mrph_list()]
+            pre_embedding_docs.append(texts)
+        embeddings = bc.encode(pre_embedding_docs,is_tokenized=True)
         for emb in embeddings:
             yield emb
 

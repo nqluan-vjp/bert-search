@@ -1,12 +1,16 @@
 import os
+import sys
+import logging
+import codecs
 from pprint import pprint
-
+from pyknp import Juman
 from flask import Flask, render_template, jsonify, request
 from elasticsearch import Elasticsearch
 from bert_serving.client import BertClient
 SEARCH_SIZE = 10
-INDEX_NAME = 'jobsearch'
+INDEX_NAME = 'db_medical'
 app = Flask(__name__)
+logging.basicConfig(level=logging.ERROR)
 
 
 @app.route('/')
@@ -18,10 +22,14 @@ def index():
 def analyzer():
     bc = BertClient(ip='bertserving', output_fmt='list')
     client = Elasticsearch('elasticsearch:9200')
-
+    texts = []
+    jumanpp = Juman(jumanpp=False)
     query = request.args.get('q')
-    query_vector = bc.encode([query])[0]
-
+    result = jumanpp.analysis(query)
+    for mrph in result.mrph_list():
+        texts.append(mrph.midasi)
+    query_vector = bc.encode([texts],is_tokenized=True)[0]
+    app.logger.error(texts)
     script_query = {
         "script_score": {
             "query": {"match_all": {}},
@@ -35,12 +43,11 @@ def analyzer():
     response = client.search(
         index=INDEX_NAME,
         body={
-            "size": SEARCH_SIZE,
+
+           "size": SEARCH_SIZE,
             "query": script_query
         }
     )
-    print(query)
-    pprint(response)
     return jsonify(response)
 
 

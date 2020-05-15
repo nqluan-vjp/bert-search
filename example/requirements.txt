@@ -1,3 +1,5 @@
 bert-serving-client==1.10.0
 elasticsearch==7.0.4
 pandas==0.25.1
+pyknp==0.4.1
+

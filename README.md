@@ -44,15 +44,42 @@ $ docker-compose up
 ```
 
 
-### 5. Create index
+### 5. JUMANのインストール 
+
+
+```bash
+$ wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/juman-7.01.tar.bz2
+$ tar jxvf juman-7.01.tar.bz2
+$ cd juman-7.01
+$ ./configure
+$ make
+$ make install
+$ echo include /usr/local/lib >> /etc/ld.so.conf
+$ ldconfig
+```
+
+### 6. KNPのインストール
+
+
+```bash
+$ wget -O knp-4.20.tar.bz2 http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/knp-4.20.tar.bz2
+$ tar jxvf knp-4.20.tar.bz2
+$ cd knp-4.20
+$ ./configure
+$ make
+$ sudo make install
+```
+
+
+### 7. Create index
 
 ```bash
 $ cd bert-search\example
-$ python create_index.py --index_file=index.json --index_name=jobsearch
+$ python create_index.py --index_file=index.json --index_name=INDEX_NAME
 # index.json
 {
   "settings": {
-    "number_of_shards": 2,
+    "number_of_shards": 14,
     "number_of_replicas": 1
   },
   "mappings": {
@@ -61,13 +88,49 @@ $ python create_index.py --index_file=index.json --index_name=jobsearch
       "enabled": "true"
     },
     "properties": {
-      "title": {
+      "id": {
         "type": "text"
       },
-      "text": {
+      "source": {
         "type": "text"
       },
-      "text_vector": {
+	  "question": {
+        "type": "text"
+      },
+	  "page": {
+        "type": "text"
+      },
+	  "category": {
+        "type": "text"
+      },
+	  "generic": {
+        "type": "text"
+      },
+	  "applicant": {
+        "type": "text"
+      },
+	  "issue_date": {
+        "type": "date"
+      },
+	  "r_issue_date": {
+        "type": "date"
+      },
+	  "molecular_weight": {
+        "type": "text"
+      },
+	  "modality": {
+        "type": "text"
+      },
+	  "adaptive_disease": {
+        "type": "text"
+      },
+	  "adm_route": {
+        "type": "text"
+      },
+	  "doc_id": {
+        "type": "text"
+      },
+      "question_vector": {
         "type": "dense_vector",
         "dims": 768
       }
@@ -77,13 +140,13 @@ $ python create_index.py --index_file=index.json --index_name=jobsearch
 ```
 
 
-### 6. Create documents
+### 8. Create documents
 
 Once you created an index, you’re ready to index some document.
 
 ```bash
-$ python create_documents.py --data=example.csv --index_name=jobsearch
-# example/example.csv
+$ python create_documents.py --data=FOLDER_DATA_JSON --index_name=INDEX_NAME
+# FOLDER_DATA_JSON
 ```
 
 After finishing the script, you can get a JSON document like follows:
@@ -92,7 +155,7 @@ After finishing the script, you can get a JSON document like follows:
 # documents.jsonl
 ```
 
-### 7. Index documents
+### 9. Index documents
 
 After converting data into a JSON, adds a JSON document to the specified index and makes it searchable.
 
@@ -100,6 +163,6 @@ After converting data into a JSON, adds a JSON document to the specified index a
 $ python example/index_documents.py
 ```
 
-### 8. Open browser
+### 10. Open browser
 
 Go to <http://127.0.0.1:5000>.

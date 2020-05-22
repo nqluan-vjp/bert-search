@@ -23,7 +23,7 @@ def analyzer():
     bc = BertClient(ip='bertserving', output_fmt='list')
     client = Elasticsearch('elasticsearch:9200')
     texts = []
-    jumanpp = Juman(jumanpp=False)
+    jumanpp = Juman()
     query = request.args.get('q')
     result = jumanpp.analysis(query)
     for mrph in result.mrph_list():
@@ -32,7 +32,7 @@ def analyzer():
     app.logger.error(texts)
     script_query = {
         "script_score": {
-            "query": {"match_all": {}},
+            "query": {"match": {"source": "tb"}},
             "script": {
                 "source": "cosineSimilarity(params.query_vector, doc['question_vector']) + 1.0",
                 "params": {"query_vector": query_vector}

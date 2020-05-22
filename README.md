@@ -44,18 +44,22 @@ $ docker-compose up
 ```
 
 
-### 5. JUMANのインストール 
+### 5. JUMAN++のインストール 
 
 
 ```bash
-$ wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/juman-7.01.tar.bz2
-$ tar jxvf juman-7.01.tar.bz2
-$ cd juman-7.01
-$ ./configure
-$ make
+$ wget https://github.com/ku-nlp/jumanpp/releases/download/v2.0.0-rc2/jumanpp-2.0.0-rc2.tar.xz && \
+$ tar xvf jumanpp-2.0.0-rc2.tar.xz && \
+$ apt update -y && \ 
+$ apt upgrade -y && \ 
+$ apt install build-essential -y && \ 
+$ apt install cmake -y && \
+$ cd jumanpp-2.0.0-rc2 && \ 
+$ mkdir build && \ 
+$ cd build && \ 
+$ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local && \ 
+$ make && \ 
 $ make install
-$ echo include /usr/local/lib >> /etc/ld.so.conf
-$ ldconfig
 ```
 
 ### 6. KNPのインストール

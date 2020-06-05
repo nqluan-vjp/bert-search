@@ -9,7 +9,16 @@ services:
     depends_on:
       - elasticsearch
       - bertserving
-
+  web_car:
+    build: ./web_car
+    ports:
+      - "9001:5001"
+    environment:
+      - INDEX_NAME
+    depends_on:
+      - elasticsearch
+      - bertserving 
+      
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
     ports:

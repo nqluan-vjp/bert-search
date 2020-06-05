@@ -4,11 +4,14 @@ Example script to create elasticsearch documents.
 import argparse
 import json
 import os
+import logging
 import pandas as pd
 from pyknp import Juman
 from bert_serving.client import BertClient
 bc = BertClient(ip='localhost', port=9555, port_out=9556,output_fmt='list')
-
+MAX_TXT_LENGTH = 1300
+LOG_FILENAME = 'medical.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
 def create_document(doc, emb, index_name):
     return {
@@ -39,28 +42,29 @@ def load_dataset(path):
             if '.json' in file:
                 with open(os.path.join(r, file), 'r',encoding="utf-8_sig") as myfile:
                     data=myfile.read()
-                    print(data)
                 obj = json.loads(data)    
                 for item in obj: 
-                    doc = {
-                        'id': item['id'],
-                        'question_vector': item['question'],
-                        'source': item['source'],
-                        'question': item['question'],
-                        'page': item['page'],
-                        'category': item['category'],
-                        'generic': item['generic'],
-                        'applicant': item['applicant'],
-                        'issue_date': item['issue_date'],
-                        'r_issue_date': item['r_issue_date'],
-                        'molecular_weight': item['molecular_weight'],
-                        'modality': item['modality'],
-                        'adaptive_disease': item['adaptive_disease'],
-                        'adm_route': item['adm_route'],
-                        'doc_id': item['doc_id'],
-                    }
-                    docs.append(doc)
-    print(docs)    
+                    if (len(item['question']) > MAX_TXT_LENGTH):
+                        logging.debug(item)
+                    else:
+                        doc = {
+                            'id': item['id'],
+                            'question_vector': item['question'],
+                            'source': item['source'],
+                            'question': item['question'],
+                            'page': item['page'],
+                            'category': item['category'],
+                            'generic': item['generic'],
+                            'applicant': item['applicant'],
+                            'issue_date': item['issue_date'],
+                            'r_issue_date': item['r_issue_date'],
+                            'molecular_weight': item['molecular_weight'],
+                            'modality': item['modality'],
+                            'adaptive_disease': item['adaptive_disease'],
+                            'adm_route': item['adm_route'],
+                            'doc_id': item['doc_id'],
+                        }
+                        docs.append(doc) 
     return docs
 
 
@@ -71,11 +75,11 @@ def bulk_predict(docs, batch_size=256):
         batch_docs = docs[i: i+batch_size]
         pre_embedding_docs = []
         for doc in batch_docs:
-            result = jumanpp.analysis(doc['question'])
-            texts = [mrph.midasi for mrph in result.mrph_list()]
-            pre_embedding_docs.append(texts)
+            for k in range(0, len(doc['question']), MAX_TXT_LENGTH)
+                result = jumanpp.analysis(doc['question'][k:k+MAX_TXT_LENGTH])
+                texts = [mrph.midasi for mrph in result.mrph_list()]
+                pre_embedding_docs.append(" ".join(texts))
         embeddings = bc.encode(pre_embedding_docs,is_tokenized=True)
-        for emb in embeddings:
             yield emb
 
 
@@ -85,7 +89,6 @@ def main(args):
         for doc, emb in zip(docs, bulk_predict(docs)):
             d = create_document(doc, emb, args.index_name)
             f.write(json.dumps(d, ensure_ascii=False) + '\n')
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Creating elasticsearch documents.')

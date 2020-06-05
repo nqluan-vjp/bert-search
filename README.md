@@ -6,8 +6,7 @@
 
 
 ```bash
-$ wget http://nlp.ist.i.kyoto-u.ac.jp/DLcounter/lime.cgi?down=http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/JapaneseBertPretrainedModel/Japanese_L-12_H-768_A-12_E-30_BPE.zip&amp;name=Japanese_L-12_H-768_A-12_E-30_BPE.zip
-$ mv lime.cgi?down=http:%2F%2Fnlp.ist.i.kyoto-u.ac.jp%2Fnl-resource%2FJapaneseBertPretrainedModel%2FJapanese_L-12_H-768_A-12_E-30_BPE.zip Japanese_L-12_H-768_A-12_E-30_BPE.zip
+$ wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/JapaneseBertPretrainedModel/Japanese_L-12_H-768_A-12_E-30_BPE.zip
 $ unzip Japanese_L-12_H-768_A-12_E-30_BPE.zip
 ```
 

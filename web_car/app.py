@@ -8,7 +8,7 @@ from flask import Flask, render_template, jsonify, request
 from elasticsearch import Elasticsearch
 from bert_serving.client import BertClient
 SEARCH_SIZE = 10
-INDEX_NAME = 'db_medical'
+INDEX_NAME = 'car_infomation'
 app = Flask(__name__)
 logging.basicConfig(level=logging.ERROR)
 
@@ -29,18 +29,17 @@ def analyzer():
     result = jumanpp.analysis(query)
     for mrph in result.mrph_list():
         texts.append(mrph.midasi)
-    list_text.append(" ".join(texts))    
+    list_text.append(" ".join(texts))
     query_vector = bc.encode(list_text,is_tokenized=False)[0]
     script_query = {
         "script_score": {
-            "query": {"match": {"source": "tb"}},
+            "query": {"match_all": {}},
             "script": {
-                "source": "cosineSimilarity(params.query_vector, doc['question_vector']) + 1.0",
+                "source": "cosineSimilarity(params.query_vector, doc['summary_vector']) + 1.0",
                 "params": {"query_vector": query_vector}
             }
         }
     }
-
     response = client.search(
         index=INDEX_NAME,
         body={
@@ -53,4 +52,4 @@ def analyzer():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)

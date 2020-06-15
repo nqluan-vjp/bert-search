@@ -141,9 +141,19 @@ $ python create_index.py --index_file=index.json --index_name=INDEX_NAME
   }
 }
 ```
+### 8. Edit bertserving container 
 
 
-### 8. Create documents
+```bash
+$ docker exec -it bertsearch_bertserving bash
+$ nano /usr/local/lib/python3.5/dist-packages/bert_serving/server/bert/tokenization.py
+# tokenization.pyの160行をコメントにする
+$ exit 
+$ docker restart bertsearch_bertserving
+```
+
+
+### 9. Create documents
 
 Once you created an index, you’re ready to index some document.
 
@@ -158,7 +168,7 @@ After finishing the script, you can get a JSON document like follows:
 # documents.jsonl
 ```
 
-### 9. Index documents
+### 10. Index documents
 
 After converting data into a JSON, adds a JSON document to the specified index and makes it searchable.
 
@@ -166,6 +176,6 @@ After converting data into a JSON, adds a JSON document to the specified index a
 $ python example/index_documents.py
 ```
 
-### 10. Open browser
+### 11. Open browser
 
 Go to <http://127.0.0.1:5000>.
